@@ -1,272 +1,272 @@
 #!/bin/bash
 
-function createUBA() {
+function createSBI() {
   infoln "Enrolling the CA admin"
-  mkdir -p organizations/peerOrganizations/uba.example.com/
+  mkdir -p organizations/peerOrganizations/sbi.example.com/
 
-  export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/uba.example.com/
+  export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/sbi.example.com/
 
   set -x
-  fabric-ca-client enroll -u https://adminuba:adminpw@localhost:7054 --caname ca-uba --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client enroll -u https://adminsbi:adminpw@localhost:7054 --caname ca-sbi --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   echo 'NodeOUs:
   Enable: true
   ClientOUIdentifier:
-    Certificate: cacerts/localhost-7054-ca-uba.pem
+    Certificate: cacerts/localhost-7054-ca-sbi.pem
     OrganizationalUnitIdentifier: client
   PeerOUIdentifier:
-    Certificate: cacerts/localhost-7054-ca-uba.pem
+    Certificate: cacerts/localhost-7054-ca-sbi.pem
     OrganizationalUnitIdentifier: peer
   AdminOUIdentifier:
-    Certificate: cacerts/localhost-7054-ca-uba.pem
+    Certificate: cacerts/localhost-7054-ca-sbi.pem
     OrganizationalUnitIdentifier: admin
   OrdererOUIdentifier:
-    Certificate: cacerts/localhost-7054-ca-uba.pem
-    OrganizationalUnitIdentifier: orderer' > "${PWD}/organizations/peerOrganizations/uba.example.com/msp/config.yaml"
+    Certificate: cacerts/localhost-7054-ca-sbi.pem
+    OrganizationalUnitIdentifier: orderer' > "${PWD}/organizations/peerOrganizations/sbi.example.com/msp/config.yaml"
 
   infoln "Registering peer0"
   set -x
-  fabric-ca-client register --caname ca-uba --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client register --caname ca-sbi --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   infoln "Registering peer1"
   set -x
-  fabric-ca-client register --caname ca-uba --id.name peer1 --id.secret peer1pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client register --caname ca-sbi --id.name peer1 --id.secret peer1pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
   infoln "Registering user"
   set -x
-  fabric-ca-client register --caname ca-uba --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client register --caname ca-sbi --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   infoln "Registering the org admin"
   set -x
-  fabric-ca-client register --caname ca-uba --id.name ubaadmin --id.secret ubaadminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client register --caname ca-sbi --id.name sbiadmin --id.secret sbiadminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   infoln "Generating the peer0 msp"
   set -x
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:7054 --caname ca-uba -M "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/msp" --csr.hosts peer0.uba.example.com --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:7054 --caname ca-sbi -M "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/msp" --csr.hosts peer0.sbi.example.com --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/msp/config.yaml"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/msp/config.yaml"
 
   infoln "Generating the peer0-tls certificates"
   set -x
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:7054 --caname ca-uba -M "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/tls" --enrollment.profile tls --csr.hosts peer0.uba.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:7054 --caname ca-sbi -M "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/tls" --enrollment.profile tls --csr.hosts peer0.sbi.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/tls/ca.crt"
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/tls/server.crt"
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/tls/server.key"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/tls/ca.crt"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/tls/server.crt"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/tls/server.key"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/uba.example.com/msp/tlscacerts"
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/uba.example.com/msp/tlscacerts/ca.crt"
+  mkdir -p "${PWD}/organizations/peerOrganizations/sbi.example.com/msp/tlscacerts"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/msp/tlscacerts/ca.crt"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/uba.example.com/tlsca"
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/uba.example.com/tlsca/tlsca.uba.example.com-cert.pem"
+  mkdir -p "${PWD}/organizations/peerOrganizations/sbi.example.com/tlsca"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/tlsca/tlsca.sbi.example.com-cert.pem"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/uba.example.com/ca"
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer0.uba.example.com/msp/cacerts/"* "${PWD}/organizations/peerOrganizations/uba.example.com/ca/ca.uba.example.com-cert.pem"
+  mkdir -p "${PWD}/organizations/peerOrganizations/sbi.example.com/ca"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer0.sbi.example.com/msp/cacerts/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/ca/ca.sbi.example.com-cert.pem"
 
 
   infoln "Generating the peer1 msp"
   set -x
-  fabric-ca-client enroll -u https://peer1:peer1pw@localhost:7054 --caname ca-uba -M "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/msp" --csr.hosts peer1.uba.example.com --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client enroll -u https://peer1:peer1pw@localhost:7054 --caname ca-sbi -M "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/msp" --csr.hosts peer1.sbi.example.com --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/msp/config.yaml"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/msp/config.yaml"
 
   infoln "Generating the peer1-tls certificates"
   set -x
-  fabric-ca-client enroll -u https://peer1:peer1pw@localhost:7054 --caname ca-uba -M "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/tls" --enrollment.profile tls --csr.hosts peer1.uba.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client enroll -u https://peer1:peer1pw@localhost:7054 --caname ca-sbi -M "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/tls" --enrollment.profile tls --csr.hosts peer1.sbi.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/tls/ca.crt"
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/tls/server.crt"
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/tls/server.key"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/tls/ca.crt"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/tls/server.crt"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/tls/server.key"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/uba.example.com/msp/tlscacerts"
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/uba.example.com/msp/tlscacerts/ca.crt"
+  mkdir -p "${PWD}/organizations/peerOrganizations/sbi.example.com/msp/tlscacerts"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/msp/tlscacerts/ca.crt"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/uba.example.com/tlsca"
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/uba.example.com/tlsca/tlsca.uba.example.com-cert.pem"
+  mkdir -p "${PWD}/organizations/peerOrganizations/sbi.example.com/tlsca"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/tlsca/tlsca.sbi.example.com-cert.pem"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/uba.example.com/ca"
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/peers/peer1.uba.example.com/msp/cacerts/"* "${PWD}/organizations/peerOrganizations/uba.example.com/ca/ca.uba.example.com-cert.pem"
+  mkdir -p "${PWD}/organizations/peerOrganizations/sbi.example.com/ca"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/peers/peer1.sbi.example.com/msp/cacerts/"* "${PWD}/organizations/peerOrganizations/sbi.example.com/ca/ca.sbi.example.com-cert.pem"
   infoln "Generating the user msp"
   set -x
-  fabric-ca-client enroll -u https://user1:user1pw@localhost:7054 --caname ca-uba -M "${PWD}/organizations/peerOrganizations/uba.example.com/users/User1@uba.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client enroll -u https://user1:user1pw@localhost:7054 --caname ca-sbi -M "${PWD}/organizations/peerOrganizations/sbi.example.com/users/User1@sbi.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/uba.example.com/users/User1@uba.example.com/msp/config.yaml"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/sbi.example.com/users/User1@sbi.example.com/msp/config.yaml"
 
   infoln "Generating the org admin msp"
   set -x
-  fabric-ca-client enroll -u https://ubaadmin:ubaadminpw@localhost:7054 --caname ca-uba -M "${PWD}/organizations/peerOrganizations/uba.example.com/users/Admin@uba.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/uba/tls-cert.pem"
+  fabric-ca-client enroll -u https://sbiadmin:sbiadminpw@localhost:7054 --caname ca-sbi -M "${PWD}/organizations/peerOrganizations/sbi.example.com/users/Admin@sbi.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/sbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/uba.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/uba.example.com/users/Admin@uba.example.com/msp/config.yaml"
+  cp "${PWD}/organizations/peerOrganizations/sbi.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/sbi.example.com/users/Admin@sbi.example.com/msp/config.yaml"
 }
 
-function createGTB() {
+function createICICI() {
   infoln "Enrolling the CA admin"
-  mkdir -p organizations/peerOrganizations/gtb.example.com/
+  mkdir -p organizations/peerOrganizations/icici.example.com/
 
-  export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/gtb.example.com/
+  export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/icici.example.com/
 
   set -x
-  fabric-ca-client enroll -u https://admingtb:adminpw@localhost:8054 --caname ca-gtb --tls.certfiles "${PWD}/organizations/fabric-ca/gtb/tls-cert.pem"
+  fabric-ca-client enroll -u https://adminicici:adminpw@localhost:8054 --caname ca-icici --tls.certfiles "${PWD}/organizations/fabric-ca/icici/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   echo 'NodeOUs:
   Enable: true
   ClientOUIdentifier:
-    Certificate: cacerts/localhost-8054-ca-gtb.pem
+    Certificate: cacerts/localhost-8054-ca-icici.pem
     OrganizationalUnitIdentifier: client
   PeerOUIdentifier:
-    Certificate: cacerts/localhost-8054-ca-gtb.pem
+    Certificate: cacerts/localhost-8054-ca-icici.pem
     OrganizationalUnitIdentifier: peer
   AdminOUIdentifier:
-    Certificate: cacerts/localhost-8054-ca-gtb.pem
+    Certificate: cacerts/localhost-8054-ca-icici.pem
     OrganizationalUnitIdentifier: admin
   OrdererOUIdentifier:
-    Certificate: cacerts/localhost-8054-ca-gtb.pem
-    OrganizationalUnitIdentifier: orderer' > "${PWD}/organizations/peerOrganizations/gtb.example.com/msp/config.yaml"
+    Certificate: cacerts/localhost-8054-ca-icici.pem
+    OrganizationalUnitIdentifier: orderer' > "${PWD}/organizations/peerOrganizations/icici.example.com/msp/config.yaml"
 
   infoln "Registering peer0"
   set -x
-  fabric-ca-client register --caname ca-gtb --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/gtb/tls-cert.pem"
+  fabric-ca-client register --caname ca-icici --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/icici/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   infoln "Registering user"
   set -x
-  fabric-ca-client register --caname ca-gtb --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/gtb/tls-cert.pem"
+  fabric-ca-client register --caname ca-icici --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/icici/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   infoln "Registering the org admin"
   set -x
-  fabric-ca-client register --caname ca-gtb --id.name gtbadmin --id.secret gtbadminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/gtb/tls-cert.pem"
+  fabric-ca-client register --caname ca-icici --id.name iciciadmin --id.secret iciciadminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/icici/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   infoln "Generating the peer0 msp"
   set -x
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:8054 --caname ca-gtb -M "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/msp" --csr.hosts peer0.gtb.example.com --tls.certfiles "${PWD}/organizations/fabric-ca/gtb/tls-cert.pem"
+  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:8054 --caname ca-icici -M "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/msp" --csr.hosts peer0.icici.example.com --tls.certfiles "${PWD}/organizations/fabric-ca/icici/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/gtb.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/msp/config.yaml"
+  cp "${PWD}/organizations/peerOrganizations/icici.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/msp/config.yaml"
 
   infoln "Generating the peer0-tls certificates"
   set -x
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:8054 --caname ca-gtb -M "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/tls" --enrollment.profile tls --csr.hosts peer0.gtb.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/gtb/tls-cert.pem"
+  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:8054 --caname ca-icici -M "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/tls" --enrollment.profile tls --csr.hosts peer0.icici.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/icici/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/tls/ca.crt"
-  cp "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/tls/server.crt"
-  cp "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/tls/server.key"
+  cp "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/tls/ca.crt"
+  cp "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/tls/server.crt"
+  cp "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/tls/server.key"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/gtb.example.com/msp/tlscacerts"
-  cp "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/gtb.example.com/msp/tlscacerts/ca.crt"
+  mkdir -p "${PWD}/organizations/peerOrganizations/icici.example.com/msp/tlscacerts"
+  cp "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/icici.example.com/msp/tlscacerts/ca.crt"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/gtb.example.com/tlsca"
-  cp "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/gtb.example.com/tlsca/tlsca.gtb.example.com-cert.pem"
+  mkdir -p "${PWD}/organizations/peerOrganizations/icici.example.com/tlsca"
+  cp "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/icici.example.com/tlsca/tlsca.icici.example.com-cert.pem"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/gtb.example.com/ca"
-  cp "${PWD}/organizations/peerOrganizations/gtb.example.com/peers/peer0.gtb.example.com/msp/cacerts/"* "${PWD}/organizations/peerOrganizations/gtb.example.com/ca/ca.gtb.example.com-cert.pem"
+  mkdir -p "${PWD}/organizations/peerOrganizations/icici.example.com/ca"
+  cp "${PWD}/organizations/peerOrganizations/icici.example.com/peers/peer0.icici.example.com/msp/cacerts/"* "${PWD}/organizations/peerOrganizations/icici.example.com/ca/ca.icici.example.com-cert.pem"
 
   infoln "Generating the user msp"
   set -x
-  fabric-ca-client enroll -u https://user1:user1pw@localhost:8054 --caname ca-gtb -M "${PWD}/organizations/peerOrganizations/gtb.example.com/users/User1@gtb.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/gtb/tls-cert.pem"
+  fabric-ca-client enroll -u https://user1:user1pw@localhost:8054 --caname ca-icici -M "${PWD}/organizations/peerOrganizations/icici.example.com/users/User1@icici.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/icici/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/gtb.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/gtb.example.com/users/User1@gtb.example.com/msp/config.yaml"
+  cp "${PWD}/organizations/peerOrganizations/icici.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/icici.example.com/users/User1@icici.example.com/msp/config.yaml"
 
   infoln "Generating the org admin msp"
   set -x
-  fabric-ca-client enroll -u https://gtbadmin:gtbadminpw@localhost:8054 --caname ca-gtb -M "${PWD}/organizations/peerOrganizations/gtb.example.com/users/Admin@gtb.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/gtb/tls-cert.pem"
+  fabric-ca-client enroll -u https://iciciadmin:iciciadminpw@localhost:8054 --caname ca-icici -M "${PWD}/organizations/peerOrganizations/icici.example.com/users/Admin@icici.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/icici/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/gtb.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/gtb.example.com/users/Admin@gtb.example.com/msp/config.yaml"
+  cp "${PWD}/organizations/peerOrganizations/icici.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/icici.example.com/users/Admin@icici.example.com/msp/config.yaml"
 }
 
-function createCBN() {
+function createRBI() {
   infoln "Enrolling the CA admin"
-  mkdir -p organizations/peerOrganizations/cbn.example.com/
+  mkdir -p organizations/peerOrganizations/rbi.example.com/
 
-  export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/cbn.example.com/
+  export FABRIC_CA_CLIENT_HOME=${PWD}/organizations/peerOrganizations/rbi.example.com/
 
   set -x
-  fabric-ca-client enroll -u https://admincbn:adminpw@localhost:11054 --caname ca-cbn --tls.certfiles "${PWD}/organizations/fabric-ca/cbn/tls-cert.pem"
+  fabric-ca-client enroll -u https://adminrbi:adminpw@localhost:11054 --caname ca-rbi --tls.certfiles "${PWD}/organizations/fabric-ca/rbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   echo 'NodeOUs:
   Enable: true
   ClientOUIdentifier:
-    Certificate: cacerts/localhost-11054-ca-cbn.pem
+    Certificate: cacerts/localhost-11054-ca-rbi.pem
     OrganizationalUnitIdentifier: client
   PeerOUIdentifier:
-    Certificate: cacerts/localhost-11054-ca-cbn.pem
+    Certificate: cacerts/localhost-11054-ca-rbi.pem
     OrganizationalUnitIdentifier: peer
   AdminOUIdentifier:
-    Certificate: cacerts/localhost-11054-ca-cbn.pem
+    Certificate: cacerts/localhost-11054-ca-rbi.pem
     OrganizationalUnitIdentifier: admin
   OrdererOUIdentifier:
-    Certificate: cacerts/localhost-11054-ca-cbn.pem
-    OrganizationalUnitIdentifier: orderer' > "${PWD}/organizations/peerOrganizations/cbn.example.com/msp/config.yaml"
+    Certificate: cacerts/localhost-11054-ca-rbi.pem
+    OrganizationalUnitIdentifier: orderer' > "${PWD}/organizations/peerOrganizations/rbi.example.com/msp/config.yaml"
 
   infoln "Registering peer0"
   set -x
-  fabric-ca-client register --caname ca-cbn --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/cbn/tls-cert.pem"
+  fabric-ca-client register --caname ca-rbi --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/rbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   infoln "Registering user"
   set -x
-  fabric-ca-client register --caname ca-cbn --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/cbn/tls-cert.pem"
+  fabric-ca-client register --caname ca-rbi --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/rbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   infoln "Registering the org admin"
   set -x
-  fabric-ca-client register --caname ca-cbn --id.name cbnadmin --id.secret cbnadminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/cbn/tls-cert.pem"
+  fabric-ca-client register --caname ca-rbi --id.name rbiadmin --id.secret rbiadminpw --id.type admin --tls.certfiles "${PWD}/organizations/fabric-ca/rbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
   infoln "Generating the peer0 msp"
   set -x
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:11054 --caname ca-cbn -M "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/msp" --csr.hosts peer0.cbn.example.com --tls.certfiles "${PWD}/organizations/fabric-ca/cbn/tls-cert.pem"
+  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:11054 --caname ca-rbi -M "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/msp" --csr.hosts peer0.rbi.example.com --tls.certfiles "${PWD}/organizations/fabric-ca/rbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/cbn.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/msp/config.yaml"
+  cp "${PWD}/organizations/peerOrganizations/rbi.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/msp/config.yaml"
 
   infoln "Generating the peer0-tls certificates"
   set -x
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:11054 --caname ca-cbn -M "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/tls" --enrollment.profile tls --csr.hosts peer0.cbn.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/cbn/tls-cert.pem"
+  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:11054 --caname ca-rbi -M "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/tls" --enrollment.profile tls --csr.hosts peer0.rbi.example.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/rbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/tls/ca.crt"
-  cp "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/tls/server.crt"
-  cp "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/tls/server.key"
+  cp "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/tls/ca.crt"
+  cp "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/tls/server.crt"
+  cp "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/tls/server.key"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/cbn.example.com/msp/tlscacerts"
-  cp "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/cbn.example.com/msp/tlscacerts/ca.crt"
+  mkdir -p "${PWD}/organizations/peerOrganizations/rbi.example.com/msp/tlscacerts"
+  cp "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/rbi.example.com/msp/tlscacerts/ca.crt"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/cbn.example.com/tlsca"
-  cp "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/cbn.example.com/tlsca/tlsca.cbn.example.com-cert.pem"
+  mkdir -p "${PWD}/organizations/peerOrganizations/rbi.example.com/tlsca"
+  cp "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/rbi.example.com/tlsca/tlsca.rbi.example.com-cert.pem"
 
-  mkdir -p "${PWD}/organizations/peerOrganizations/cbn.example.com/ca"
-  cp "${PWD}/organizations/peerOrganizations/cbn.example.com/peers/peer0.cbn.example.com/msp/cacerts/"* "${PWD}/organizations/peerOrganizations/cbn.example.com/ca/ca.cbn.example.com-cert.pem"
+  mkdir -p "${PWD}/organizations/peerOrganizations/rbi.example.com/ca"
+  cp "${PWD}/organizations/peerOrganizations/rbi.example.com/peers/peer0.rbi.example.com/msp/cacerts/"* "${PWD}/organizations/peerOrganizations/rbi.example.com/ca/ca.rbi.example.com-cert.pem"
 
   infoln "Generating the user msp"
   set -x
-  fabric-ca-client enroll -u https://user1:user1pw@localhost:11054 --caname ca-cbn -M "${PWD}/organizations/peerOrganizations/cbn.example.com/users/User1@cbn.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/cbn/tls-cert.pem"
+  fabric-ca-client enroll -u https://user1:user1pw@localhost:11054 --caname ca-rbi -M "${PWD}/organizations/peerOrganizations/rbi.example.com/users/User1@rbi.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/rbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/cbn.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/cbn.example.com/users/User1@cbn.example.com/msp/config.yaml"
+  cp "${PWD}/organizations/peerOrganizations/rbi.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/rbi.example.com/users/User1@rbi.example.com/msp/config.yaml"
 
   infoln "Generating the org admin msp"
   set -x
-  fabric-ca-client enroll -u https://cbnadmin:cbnadminpw@localhost:11054 --caname ca-cbn -M "${PWD}/organizations/peerOrganizations/cbn.example.com/users/Admin@cbn.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/cbn/tls-cert.pem"
+  fabric-ca-client enroll -u https://rbiadmin:rbiadminpw@localhost:11054 --caname ca-rbi -M "${PWD}/organizations/peerOrganizations/rbi.example.com/users/Admin@rbi.example.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/rbi/tls-cert.pem"
   { set +x; } 2>/dev/null
 
-  cp "${PWD}/organizations/peerOrganizations/cbn.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/cbn.example.com/users/Admin@cbn.example.com/msp/config.yaml"
+  cp "${PWD}/organizations/peerOrganizations/rbi.example.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/rbi.example.com/users/Admin@rbi.example.com/msp/config.yaml"
 }
 
 function createOrderer() {

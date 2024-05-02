@@ -281,7 +281,7 @@ Orderer: &OrdererDefaults
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
         # BlockValidation specifies what signatures must be included in the block
-        # from the orderer for the peer to validate it. *SBI
+        # from the orderer for the peer to validate it.
         BlockValidation:
             Type: ImplicitMeta
             Rule: "ANY Writers"

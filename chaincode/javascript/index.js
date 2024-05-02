@@ -6,7 +6,7 @@
 
 'use strict';
 
-const KYCContract = require('./lib/KycContract');
+const KYCContract = require('./lib/kyccontract');
 
 module.exports.KYCContract = KYCContract;
 module.exports.contracts = [ KYCContract ];
