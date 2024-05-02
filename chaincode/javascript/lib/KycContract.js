@@ -8,10 +8,10 @@ class KYCContract extends Contract {
         // Initialization function (no action needed in this example)
     }
 
-    async CreateCustomer(ctx, customerID, name, dob, bank, mobile) {
+    async CreateCustomer(ctx, customerID, firstname,lastname, dob, org, mobile, email) {
         const customerBytes = await ctx.stub.getState(customerID);
         if (customerBytes && customerBytes.length > 0) {
-            throw new Error(`The customer already exists for user ${name}`);
+            throw new Error(`The customer already exists for user ${firstname}`);
         }
 
         const clientOrgID = ctx.clientIdentity.getMSPID();
@@ -19,11 +19,13 @@ class KYCContract extends Contract {
         const customer = {
             docType: "customer",
             customerID,
-            name,
+            firstname,
+			lastname,
             dob,
             kycConsent: false,
-            bank,
+            org,
             mobile,
+			email,
             createrOrg: clientOrgID,
             latestTransaction: ctx.stub.getTxID(),
         };
